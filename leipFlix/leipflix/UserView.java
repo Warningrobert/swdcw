@@ -97,6 +97,10 @@ public class UserView {
     private void browseScreen(User user, IContentRepository contentRepo) {
         int selection = 0;
         int movie;
+        int currentPage = 0;
+        int moviesPerPage = user.getMoviesPerPage();
+        int totalMovies = contentRepo.getContent().size();
+        int totalPages = (totalMovies + moviesPerPage - 1) / moviesPerPage;
 
         do {
             System.out.println("Select an option among the following:");
@@ -108,11 +112,29 @@ public class UserView {
 
             switch (selection) {
                 case 1:
-                    movie = 0;
-                    for (Streamable m : contentRepo.getContent()) {
-                        System.out.println(movie + " - " + m.toString());
-                        movie++;
-                    }
+                    int pageSelection = 0;
+                    do {
+                        int start = currentPage * moviesPerPage;
+                        int end = Math.min(start + moviesPerPage, totalMovies);
+
+                        System.out.println("Page " + (currentPage + 1) + " of " + totalPages);
+                        for (int i = start; i < end; i++) {
+                            System.out.println(i + " - " + contentRepo.getContent().get(i).toString());
+                        }
+
+                        System.out.println();
+                        System.out.println("1 - next page");
+                        System.out.println("2 - previous page");
+                        System.out.println("3 - go back");
+
+                        pageSelection = getSelection(1, 3);
+
+                        if (pageSelection == 1 && currentPage < totalPages - 1) {
+                            currentPage++;
+                        } else if (pageSelection == 2 && currentPage > 0) {
+                            currentPage--;
+                        }
+                    } while (pageSelection != 3);
                     break;
                 case 2:
                     System.out.println("Select the movie based on associated id when browsing");
