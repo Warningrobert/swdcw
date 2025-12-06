@@ -1,7 +1,7 @@
 package leipflix;
 
 
-public class Movie{
+public class Movie implements Streamable {
     private String title;
 
     public Movie(String title){
